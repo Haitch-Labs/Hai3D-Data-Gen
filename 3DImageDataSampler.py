@@ -4,6 +4,15 @@ import time
 import os
 import pyperclip
 
+# Things to do:
+#    - Fix the bug for the rendering of the man
+#    - Fix the bug for the colour
+#    - Improve rotation algorithm, so he moves in blocks
+#    - Allow it to do render more than one image in many file locations
+#    - Make a branch with the Blender API approach
+
+
+
 # Note: Only works on MAC OSX Macbook Air
 # Blender was chosen because it could open
 # much faster in comparison to CAD
