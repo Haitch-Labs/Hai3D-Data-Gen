@@ -34,6 +34,11 @@ bpy.ops.object.empty_add(type="PLAIN_AXES", location=(0, 0, 0))
 bpy.ops.object.camera_add(location=(0, -10, 0), rotation=((math.pi/2), 0, 0)) # pi/2 is equivalent to 90degrees
                                                                               # for some weird reson. Blender API is in rads. But GUI in degrees
                          
-
+# Parent the Empty to the Camera 
+objects = bpy.data.objects
+a = objects['Empty']
+b = objects['Camera']
+b.parent = a
+ 
                           
     
