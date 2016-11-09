@@ -9,3 +9,16 @@
 # Rotate the 3D model (in increments)         |
 # Render and save the image                   |
 
+import bpy
+import os
+
+# Generate the full paths of all the .obj files in 3D Datasets
+datasetDirectoryPath = "/Users/jack/Desktop/Projects/Hai3D-Data-Gen/3D Datasets/"
+objs = []
+for folderName, subFolders, fileNames in os.walk(datasetDirectoryPath):
+    for fileName in fileNames:
+        if fileName.endswith(".obj"):
+            objFile = os.path.join(folderName, fileName)
+            objs.append(objFile)
+
+    
