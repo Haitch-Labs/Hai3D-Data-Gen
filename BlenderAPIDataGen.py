@@ -11,6 +11,7 @@
 
 import bpy
 import os
+import math
 
 # Generate the full paths of all the .obj files in 3D Datasets
 datasetDirectoryPath = "/Users/jack/Desktop/Projects/Hai3D-Data-Gen/3D Datasets/"
@@ -28,3 +29,11 @@ for ob in scene.objects:
     bpy.data.objects[ob.name].select = True
     bpy.ops.object.delete()
 
+# Add in a the Plain Axes and Camera (give them settings)
+bpy.ops.object.empty_add(type="PLAIN_AXES", location=(0, 0, 0))
+bpy.ops.object.camera_add(location=(0, -10, 0), rotation=((math.pi/2), 0, 0)) # pi/2 is equivalent to 90degrees
+                                                                              # for some weird reson. Blender API is in rads. But GUI in degrees
+                         
+
+                          
+    
