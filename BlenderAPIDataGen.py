@@ -21,4 +21,10 @@ for folderName, subFolders, fileNames in os.walk(datasetDirectoryPath):
             objFile = os.path.join(folderName, fileName)
             objs.append(objFile)
 
-    
+
+# Delete Everything From the Scene
+scene = bpy.context.scene
+for ob in scene.objects:
+    bpy.data.objects[ob.name].select = True
+    bpy.ops.object.delete()
+
