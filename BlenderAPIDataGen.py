@@ -12,6 +12,8 @@
 import bpy
 import os
 import math
+import time
+import numpy as np
 
 # Generate the full paths of all the .obj files in 3D Datasets
 datasetDirectoryPath = "/Users/jack/Desktop/Projects/Hai3D-Data-Gen/3D Datasets/"
@@ -27,18 +29,121 @@ for folderName, subFolders, fileNames in os.walk(datasetDirectoryPath):
 scene = bpy.context.scene
 for ob in scene.objects:
     bpy.data.objects[ob.name].select = True
+    if ob.name == 'Cube':
+        bpy.data.objects[ob.name].select = False # keep the cube for practicing.
     bpy.ops.object.delete()
 
-# Add in a the Plain Axes and Camera (give them settings)
+# Add in a the Plain Axes at (0, 0, 0)
 bpy.ops.object.empty_add(type="PLAIN_AXES", location=(0, 0, 0))
-bpy.ops.object.camera_add(location=(0, -10, 0), rotation=((math.pi/2), 0, 0)) # pi/2 is equivalent to 90degrees
-                                                                              # for some weird reson. Blender API is in rads. But GUI in degrees
+
+# Add in a Camera (pointing at the Plain Axes)
+bpy.ops.object.camera_add(location=(0, -10, 0), rotation=((math.pi/2), 0, 0), enter_editmode=True)
+# pi/2 is equivalent to 90degrees
+# for some weird reson. Blender API is in rads. But GUI in degrees
                          
-# Parent the Empty to the Camera 
+# Parent the Camera to the Empty
 objects = bpy.data.objects
-a = objects['Empty']
-b = objects['Camera']
-b.parent = a
+empty = objects['Empty']
+camera = objects['Camera']
+camera.parent = empty
+
+# Rotate the Camera and add in the KeyFrames
+bpy.context.scene.camera = bpy.data.objects['Camera']
+empty.rotation_mode = "XYZ"
+
+for i, x in enumerate(np.linspace(0,2*math.pi, 20)):
+    empty.rotation_euler = (0, 0, x)
+    empty.keyframe_insert(data_path="rotation_euler", frame=i, index=-1)
+
+    bpy.context.scene.render.filepath = "/Users/jack/Desktop/Cube/Cube%d.png" % (i)
+    bpy.ops.render.render(scene="Scene", write_still = True, use_viewport=True)
+
+
+
+
+"""
+num_frames = 90
+gamma = math.pi * 2 / num_frames
+for i in range(1, num_frames+1):
+    empty.rotation_euler[2] = gamma * i
+    empty.keyframe_insert(data_path="rotation_euler", frame=i, index=-1)
+
+    bpy.context.scene.render.filepath = "/Users/jack/Desktop/Cube/Cube%d.png" % i
+    bpy.ops.render.render(write_still = True, use_viewport=True)
+"""
+
+
+
+# Move the Camera around (not moving the camera any more. Moving the cube and rotating it
+#if(len(bpy.data.cameras) == 1):
+#obj = bpy.data.objects['Camera'] # bpy.types.Camera
+#obj.rotation_euler[2] = 0.0
+#obj.keyframe_insert(data_path="rotation", index = 1, frame=1.0)
+#obj.rotation_euler[2] = 4 * math.pi
+#obj.keyframe_insert(data_path="rotation", index = 2, frame=20.0)
+"""
+
+for objFile in objs:
+    if "Person1.obj" in objFile:
+        # Import the obj. file
+        bpy.ops.import_scene.obj(filepath=objFile)
+        
+        # Rezize .obj to 3.5 whilst maintaining ratio
+        objDimensions = bpy.data.objects["CH_MNPCBotStreetGangSoldier01"].dimensions
+        ratio = 3.5 / max(objDimensions)
+
+        objDimensions[0] *= ratio  # updates the x-axis
+        objDimensions[1] *= ratio  # updates the y-axis
+        objDimensions[2] *= ratio  # updates the z-axis        
+
+        bpy.ops.object.origin_set(type="GEOMETRY_ORIGIN")
+        time.sleep(2)
+        bpy.ops.object.delete()
+
+"""
+
+
+
+
+
+        
+
+        
+"""
+        for i, dimension in enumerate(objDimensions):
+            newDimension = dimension * ratio
+            bpy.data.objects["CH_MNPCBotStreetGangSoldier01"].dimensions[i] = newDimension
+            
+
+           
+        
+
+
+...     thelist[i] = number * 10
+
+
+        
+        x = bpy.data.objects["CH_MNPCBotStreetGangSoldier01"].dimensions[0]
+        y = bpy.data.objects["CH_MNPCBotStreetGangSoldier01"].dimensions[1]
+        z = bpy.data.objects["CH_MNPCBotStreetGangSoldier01"].dimensions[2]
+
+        ratio = 3.5 / max(x,y,z)
+
+        x *= ratio
+        y *= ratio
+        z *= ratio
+
+        bpy.data.objects["CH_MNPCBotStreetGangSoldier01"].dimensions[0] = x
+        bpy.data.objects["CH_MNPCBotStreetGangSoldier01"].dimensions[1] = y
+        bpy.data.objects["CH_MNPCBotStreetGangSoldier01"].dimensions[2] = z
+        
+        
+        # Give it texture
+        # Render it (and save in desired Location)
+        # Delete it
+
+    """
+    
  
                           
     
