@@ -3,9 +3,10 @@ import os
 import math
 import time
 import numpy as np
+import re
 
 # Generate the full paths of all the .obj files in 3D Datasets
-datasetDirectoryPath = "/Users/jack/Desktop/Projects/Hai3D-Data-Gen/3D Datasets/"
+datasetDirectoryPath = "/Users/jack/Desktop/Projects/Hai3D-Data-Gen/PASCAL DATASET/"
 objs = []
 for folderName, subFolders, fileNames in os.walk(datasetDirectoryPath):
     for fileName in fileNames:
@@ -27,44 +28,57 @@ bpy.ops.object.camera_add(location=(0, -10, 0), rotation=((math.pi/2), 0, 0), en
 # pi/2 is equivalent to 90degrees. for some weird reson. Blender API is in rads. But GUI in degrees
                          
 # Parent the Camera to the Empty
-objects = bpy.data.objects
-empty = objects['Empty']
-camera = objects['Camera']
+initialObjects = bpy.data.objects
+empty = initialObjects['Empty']
+camera = initialObjects['Camera']
 camera.parent = empty
+
+# Create Camera Animation (by rotating the Empty)
+bpy.context.scene.camera = bpy.data.objects['Camera']
+empty.rotation_mode = "XYZ"
+frames = 20
+bpy.data.scenes["Scene"].frame_end = frames
+for i, x in enumerate(np.linspace(0,2*math.pi, frames)):  # 0 to 360 degrees in 20.
+    empty.rotation_euler = (0, 0, x)
+    empty.keyframe_insert(data_path="rotation_euler", frame=i, index=-1)
 
 # Import the .obj files and Render them.
 for objFilePath in objs:
+
+    # Import the obj. file (and give it texture *currently doesn't do this)
+    bpy.ops.import_scene.obj(filepath=objFilePath)
     
-    if "Person1.obj" in objFile: # only practicing on one for now.
+    # Texture it
+    """
+    for area in bpy.context.screen.areas: # iterate through areas in current screen
+        if area.type == 'VIEW_3D':
+            for space in area.spaces: # iterate through spaces in current VIEW_3D area
+                if space.type == 'VIEW_3D': # check if space is a 3D view
+                    space.viewport_shade = 'TEXTURED' # set the viewport shading to rendered
+    """
+    
+    if len(bpy.context.selected_objects) > 1: # For the moment the solution only works for .objs that are one polygon
+        bpy.ops.object.delete()               # if the object has more than one poly (e.g. a poly for arms, legs, eyes,
+        continue                              # wheels etc.) it doesn't resize correctly.
 
-        # Import the obj. file (and give it texture *currently doesn't do this)
-        bpy.ops.import_scene.obj(filepath=objFilePath)
+    # Get the name of the obj.
+    for object in bpy.context.selected_objects:
+        objName = object.name
 
-        # centeter the 3D .obj about the central axis
-        bpy.ops.object.origin_set(type="GEOMETRY_ORIGIN")
+    # centeter the 3D .obj about the central axis
+    bpy.ops.object.origin_set(type="GEOMETRY_ORIGIN")
 
-        # Rezize .obj to fit within the camera view
-        objDimensions = bpy.data.objects["CH_MNPCBotStreetGangSoldier01"].dimensions
-        ratio = 3.5 / max(objDimensions)
-        bpy.data.objects["CH_MNPCBotStreetGangSoldier01"].scale = [ratio, ratio, ratio]
+    # Rezize .obj to fit within the camera view
+    objDimensions = bpy.data.objects[objName].dimensions
+    ratio = 3.5 / max(objDimensions)
+    bpy.data.objects[objName].scale = [ratio, ratio, ratio]
 
-        # Rotate the Camera and add in the KeyFrames
-        bpy.context.scene.camera = bpy.data.objects['Camera']
-        empty.rotation_mode = "XYZ"
-
-        for i, x in enumerate(np.linspace(0,2*math.pi, 20)):
-            empty.rotation_euler = (0, 0, x)
-            empty.keyframe_insert(data_path="rotation_euler", frame=i, index=-1)
-
-            bpy.context.scene.render.filepath = "/Users/jack/Desktop/Cube/%s%d.png" % (objectName, i)
-            bpy.ops.render.render(scene="Scene", write_still = True, use_viewport=True)
-        
-        # Delete the .obj and move onto the next .obj
-        # bpy.ops.object.delete()
-
-
-
-
+    # Render the Images
+    bpy.context.scene.render.filepath = objFilePath.replace(".obj", ".pgn").replace("PASCAL DATASET", "PASCAL NEW")
+    bpy.ops.render.render(animation=True)
+    
+    # Delete the .obj and move onto the next .obj
+    bpy.ops.object.delete()
 
 
 ## Scraps code ##################
