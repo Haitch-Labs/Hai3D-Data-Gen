@@ -1,8 +1,23 @@
 from pyautogui import *
-import pyautogui
 import time
 import os
-import pyperclip
+import pyperclip #   - pip install pyperclip (on MAC)
+import pyautogui # On windows there are no dependencies. Can pip install straight away
+                 # But on Mac:
+                 #   - sudo pip3 install pyobjc-framework-Quartz
+                 #   - sudo pip3install pyobjc-core
+                 #   - sudo pip3 install pyobjc.
+                 # On Linux:
+                 #   - sudo pip3 install python3-xlib
+                 #   - sudo apt-get install scrot
+                 #   - sudo apt-get install python3-tk
+                 #   - sudo apt-get install python3-dev
+                 # To Install PyautoGUI
+                 #   - pip install pyautogui
+                 # pip3 can be used on OS X or Linux if preferred
+                 
+# All credit goes to Al Sweigart for both moduals Pyperclip and PyautoGUI
+                 
 
 # Things to do:
 #    - Fix the bug for the rendering of the man
@@ -11,9 +26,7 @@ import pyperclip
 #    - Allow it to do render more than one image in many file locations
 #    - Make a branch with the Blender API approach
 
-
-
-# Note: Only works on MAC OSX Macbook Air
+# Note: This only works on MAC OSX Macbook Air
 # Blender was chosen because it could open
 # much faster in comparison to CAD
 
@@ -25,6 +38,7 @@ def open_application(application_name):
     press("enter")                  # Hit "enter" to open application
 
 def begin_recording(startX, startY, finishX, finishY):
+    # Uses Quicktime Screen Recorder Functionailty to record the screen
     open_application("QuickTime Player")
     hotkey("ctrl", "command", 'n')  # Keyboard shortcut for beginning screen recording
     time.sleep(1)                   # Wait 0.5s to confirm box has appeared (can go to 0.2)  
@@ -90,7 +104,8 @@ def main():
 
         # ROTATE THE CAMERA AROUND THE PLAIN AXIS 360 DEGREES x10 in total of 100 frames
     num_rotations = 10
-    click(1300, 160, button="left") # Select the created Empty in the menu
+    click(1300, 160, button="left") sc
+    # Select the created Empty in thesc menu
 
                                      # note: menu already dragged out from above ^^
     click(1150, 255, button="right") # Right Click the Z rotation to bring up the menu
@@ -98,15 +113,17 @@ def main():
                                      # the initial camera position for keyframe 1
     click(577, 780, button="left")  # Click 100th frame in the timeline
     click(500,815, button="left")   # Set the timeline to only go for 100 frames
-    typewrite("100")
-    press("enter")                  
-
+    typewrite("100")scsc
+    
+    
+    press("enter")
+    
     click(1150, 255, button="left")    # Left Click the Z rotation.
     typewrite(str(360*num_rotations))  # 360 will move the camera around 360 degrees (back to where it started)
     press("enter")
 
     click(1150, 255, button="right") # Right Click the Z rotation to bring up the menu
-    click(1150, 255, button="left")  # Go Down and click insert single keyframe (note it has moved slightly higher)
+    click(1150, 255, button="left")  # Go Down and click insert sinle keyframe (note it has moved slightly higher)
 
             # DELETE THE DEFAULT CUBE
     click(600, 400, button="right")
@@ -179,9 +196,9 @@ def main():
 
             # ROTATE THE 3D MODEL
         # set the first frame to 0degrees
-        click(217, 780, button="left")  # click the frame number down the bottom to the left of the play button
+        click(217, 780, button="left")  # cAlick the frame number down the bottom to the left of the play button
         click()
-        click(1150, 235, button="left") # set y-rotation to 0
+        click(1150, 235, button="lefts") # set y-rotation to 0
         typewrite("0")
         press("enter")
         
@@ -235,8 +252,6 @@ def main():
         #click()                         # Press Delete
             
        """
-
-        
 
 main()
 
