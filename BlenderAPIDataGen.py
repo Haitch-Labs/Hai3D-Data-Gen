@@ -36,9 +36,9 @@ bpy.context.scene.camera = bpy.data.objects['Camera']
 empty.rotation_mode = "XYZ"
 frames = 20
 bpy.data.scenes["Scene"].frame_end = frames
-for i, rotation in enumerate(np.linspace(0,2*math.pi, frames)):          # 0 to 360 degrees in 20 frames
-    empty.rotation_euler = (0, 0, x)                                     # This rotation pans the camera
-    empty.keyframe_insert(data_path="rotation_euler", frame=i, index=-1) # around the empty like a turntable
+for i, rotation in enumerate(np.linspace(0,2*math.pi, frames)):          # 0 to 360 degrees in 20 frames (with equal 
+    empty.rotation_euler = (0, 0, x)                                     # steps). This rotation pans the camera
+    empty.keyframe_insert(data_path="rotation_euler", frame=i, index=-1) # around the central axis like a turntable
 
 # Import the .obj files and Render them.
 for objFilePath in objs:
@@ -78,3 +78,36 @@ for objFilePath in objs:
     
     # Delete the .obj and move onto the next .obj
     bpy.ops.object.delete()
+
+
+"""
+Summary of this Blender Script
+---------------------------------------------------
+     SCENE SETUP
+- Generate the full paths of all the .obj files in 3D Datasets
+- Delete Everything From the Scene
+- Add in a the Plain Axes at (0, 0, 0)
+- Add in a Camera (pointing perpendicular to the Plain Axes)
+- Add in an Empty at (0, 0, 0) with type Plain Axes
+- Add in a Camera (pointing perpendicular to the Plain Axes)
+- Parent the Camera to the Empty
+- Create Camera Animation (by rotating the Empty)
+
+FOR EACH .OBJ IN THE DATASET:
+    IMPORT AND FORMAT THE .OBJ
+- Import the .obj file
+- Texture the .obj file
+- Get the name of the .obj
+- center the .obj about the central axis
+- Rezize .obj to fit within the camera view
+
+    RENDER THE ANIMATION
+- Define the new location to save the rendered images
+- Render the animation (saving each frame as .png)
+- Delete the .obj (this is removes .obj from scene so the next .obj can be imported)
+"""
+# TO DO LIST
+
+# Give Each .obj their .htm texture
+# allow resizing to work for images with multiple polygons
+# then optimize camera rotation if necessary
